@@ -28,7 +28,7 @@ namespace Heroes.Controllers
             {
                 return Ok(res);
             }
-            return NotFound();
+            return BadRequest("no heroes");
         }
         [HttpPost("addHero")]
         [Authorize]
@@ -51,12 +51,13 @@ namespace Heroes.Controllers
         public async Task<IActionResult> GetAllHeroesOfUser()
         {
             string? userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine("userId"+ userId);
             var res= await _heroesRepository.GetHeroesByUserAsync(userId);
             if (res.Count > 0)
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return BadRequest("no heroes");
         }
 
         [HttpPatch("users/{user}/heroes/{heroName}")]
@@ -64,12 +65,12 @@ namespace Heroes.Controllers
         public async Task<IActionResult>TrainHeroByName(string heroName)
         {
             string? userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            bool res= await _heroesRepository.TrainHeroAsync(heroName, userId);
-            if (res)
+            var res= await _heroesRepository.TrainHeroAsync(heroName, userId);
+            if (res!=null)
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return BadRequest("failed to train");
         }
 
     }

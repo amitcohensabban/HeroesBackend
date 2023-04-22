@@ -36,7 +36,8 @@ namespace Heroes.Controllers
             {
                 return Unauthorized();
             }
-            return Ok(res);
+            var tokenResponse = new { token = res };
+            return Ok(tokenResponse);
         }
 
     }

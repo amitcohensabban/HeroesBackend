@@ -41,18 +41,19 @@ namespace Heroes.Repositories
             return heroes;
 
         }
-        public async Task<bool>TrainHeroAsync(string heroName,string userId)
+        public async Task<Hero>TrainHeroAsync(string heroName,string userId)
         {
             var heroes = await _context.Heroes.Where(h => h.guideId == userId).ToListAsync();
             var hero =  heroes.FirstOrDefault(h => h.Name == heroName);
-            if (hero == null || heroes == null)
-                return false;
 
+            if (hero == null || heroes == null)
+                return null;
+            Console.WriteLine("hi");
             string formattedDate = DateTime.Today.ToString("yyyy-MM-dd");
 
             Random rnd = new Random();
             if (hero.amountTrainingPerDay == 5 && hero.lastTrainingDate == formattedDate)
-                return false;
+                return null;
 
             if(hero.lastTrainingDate != formattedDate)
             {
@@ -68,7 +69,7 @@ namespace Heroes.Repositories
             hero.lastTrainingDate = formattedDate;
             hero.amountTrainingPerDay++;
             await _context.SaveChangesAsync();
-            return true;
+            return hero;
         }
     }
 }
